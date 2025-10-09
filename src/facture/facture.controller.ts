@@ -28,7 +28,7 @@ export class FactureController {
   @Get(':id/pdf')
   async downloadPdf(@Param('id') id: string, @Res() res: Response) {
     const facture_id = Number(id);
-    // ...validate facture_id if needed...
+    
     const pdfBuffer = await this.factureService.generatePdf(facture_id);
     res.set({
       'Content-Type': 'application/pdf',
