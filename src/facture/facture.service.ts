@@ -62,7 +62,7 @@ export class FactureService {
     });
 
     const tvaMap = new Map<number, number>();
-    items.forEach(item => {
+    items.forEach((item) => {
       const itemTva = item.puHt * item.quantite * (item.tva / 100);
       tvaMap.set(item.tva, (tvaMap.get(item.tva) || 0) + itemTva);
     });
@@ -74,8 +74,7 @@ export class FactureService {
 
     const totalHt = items.reduce((sum, it) => sum + it.totalHt, 0);
     const totalTtc =
-      totalHt +
-      Array.from(tvaMap.values()).reduce((sum, it) => sum + it, 0);
+      totalHt + Array.from(tvaMap.values()).reduce((sum, it) => sum + it, 0);
 
     const facture_info = {
       facture_id: facture.facture_id,

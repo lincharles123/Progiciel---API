@@ -31,4 +31,10 @@ export class EntiteService {
       where: { entite_id },
     });
   }
+
+  async findByTitre(titre: string): Promise<Entite | null> {
+    return this.prisma.entite.findUnique({
+      where: { titre },
+    });
+  }
 }

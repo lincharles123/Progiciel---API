@@ -1,4 +1,12 @@
-import { Param, Request, Controller, Post, Get, Res, HttpStatus } from '@nestjs/common';
+import {
+  Param,
+  Request,
+  Controller,
+  Post,
+  Get,
+  Res,
+  HttpStatus,
+} from '@nestjs/common';
 import { FactureService } from './facture.service';
 import type { Response } from 'express';
 
@@ -28,7 +36,7 @@ export class FactureController {
   @Get(':id/pdf')
   async downloadPdf(@Param('id') id: string, @Res() res: Response) {
     const facture_id = Number(id);
-    
+
     const pdfBuffer = await this.factureService.generatePdf(facture_id);
     res.set({
       'Content-Type': 'application/pdf',

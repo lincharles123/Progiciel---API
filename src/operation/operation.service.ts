@@ -7,7 +7,7 @@ export class OperationService {
 
   getAllOfFacture(facture_id: number) {
     return this.prisma.operation.findMany({
-      where: {facture_id },
+      where: { facture_id },
     });
   }
 }

@@ -11,8 +11,21 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('auth/login')
   async login(@Request() req) {
-    console.log(req.user);
-    return this.authService.login(req.user);
+    // Later for cookie-based auth
+    // const access_token = this.authService.login(req.user);
+    // res.cookie('token', access_token, {
+    //   httpOnly: true,
+    //   maxAge: process.env.JWT_EXPIRATION_TIME,
+    // });
+    // return this.authService.login(req.user);
+    const access_token = await this.authService.login(req.user);
+    return { access_token: access_token };
+  }
+
+  @Public()
+  @Post('auth/signup')
+  async register(@Request() req) {
+    return this.authService.signup(req.body);
   }
 
   @Get('profile')

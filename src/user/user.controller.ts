@@ -9,6 +9,6 @@ export class UserController {
   @Public()
   @Post('create')
   async create(@Body() body) {
-    return await this.userService.createUser(body);
+    return await this.userService.create(body);
   }
 }
