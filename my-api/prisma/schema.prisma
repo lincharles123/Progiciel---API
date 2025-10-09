@@ -1,0 +1,99 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ------------------------------
+// Client
+// ------------------------------
+model Client {
+  client_id   Int       @id @default(autoincrement())
+  titre       String    @unique
+  address     String
+  facture     Facture[]
+  entite_id   Int
+  entite      Entite    @relation(fields: [entite_id], references: [entite_id])
+}
+
+model Facture {
+  facture_id        Int         @id @default(autoincrement())
+  date_facturation  DateTime    @default(now())
+  date_echeance     DateTime
+  operation         Operation[]
+  client_id         Int
+  entite_id         Int
+  client            Client      @relation(fields: [client_id], references: [client_id])
+  entite            Entite      @relation(fields: [entite_id], references: [entite_id])
+}
+
+model Operation {
+  operation_id           Int        @id @default(autoincrement())
+  snapshot_prestation    String
+  snapshot_prix_unitaire Float
+  snapshot_tva           Float
+  quantite               Int
+  facture_id             Int
+  prestation_id          Int
+  facture                Facture    @relation(fields: [facture_id], references: [facture_id])
+  prestation             Prestation @relation(fields: [prestation_id], references: [prestation_id])
+}
+
+model Prestation {
+  prestation_id  Int         @id @default(autoincrement())
+  titre          String      @unique
+  prix_unitaire  Float
+  operation      Operation[]
+  entite_id      Int
+  categorie_id   Int
+  entite         Entite      @relation(fields: [entite_id], references: [entite_id])
+  categorie      Categorie   @relation(fields: [categorie_id], references: [categorie_id])
+}
+
+model Categorie {
+  categorie_id  Int          @id @default(autoincrement())
+  titre         String       @unique
+  prestation    Prestation[]
+  tva_id        Int
+  entite_id     Int
+  tva           TVA          @relation(fields: [tva_id], references: [tva_id])
+  entite        Entite       @relation(fields: [entite_id], references: [entite_id])
+}
+
+model TVA {
+  tva_id     Int         @id @default(autoincrement())
+  titre      String      @unique
+  taux       Float
+  categorie  Categorie[]
+}
+
+model User {
+  user_id    Int    @id @default(autoincrement())
+  username   String @unique
+  password   String
+  entite_id  Int
+  entite     Entite @relation(fields: [entite_id], references: [entite_id])
+}
+
+model Entite {
+  entite_id    Int          @id @default(autoincrement())
+  titre        String       @unique
+  address      String
+  telephone    String
+  email        String
+  site         String
+  client       Client[]
+  facture      Facture[]
+  categorie    Categorie[]
+  prestation   Prestation[]
+  user         User[]
+}

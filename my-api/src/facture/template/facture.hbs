@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    :root {
+      font-size: 15px;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+    }
+
+    h1{
+      font-size: 1.4rem;
+    }
+
+    h2 {
+      font-size: 1.2rem;
+    }
+
+    h1, h2 {
+      line-height: 1.2;
+    }
+
+    .facture-details p {
+      line-height: 1.2;
+      margin: 2px 0;
+    }
+
+    .facture-details {
+      text-align: right;
+      margin-bottom: 25px;
+      line-height: 1.4;
+      gap: 0;
+    }
+
+    .header-boxes {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 25px;
+    }
+    .emetteur, .client {
+      padding: 12px;
+      border-radius: 4px;
+      width: 48%;
+      line-height: 1.4;
+    }
+    .emetteur {
+      background-color: rgb(202, 202, 202);
+    }
+    .client {
+      border: 1px solid black;
+    }
+    .emetteur h3, .client h3 {
+      margin-bottom: 6px;
+      font-size: 1.1rem;
+    }
+
+    .contenu {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      font-size: 0.95rem;
+    }
+
+    .contenu th, .contenu td {
+      border: 1px solid black;
+      padding: 8px;
+      text-align: right;
+    }
+
+    .contenu th {
+      font-weight: bold;
+      text-align: center;
+    }
+    .contenu td:first-child, .contenu th:first-child {
+      text-align: left;
+    }
+    .contenu::before {
+      content: "Montants exprimés en Euros";
+      width: 100%;
+      text-align: right;
+      padding-right: 5rem;
+    }
+
+    .bilan {
+      float: right;
+      margin-top: 20px;
+      font-size: 0.95rem;
+      width: 40%;
+      display: flex;
+      flex-direction: column;
+      background: #f1efec;
+    }
+
+    .tva-row,
+    .ttc {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 3px;
+      box-sizing: border-box;
+    }
+
+    .ttc {
+      background: #c4c3c3;
+    }
+
+    .titre {
+      text-align: left;
+    }
+
+    .prix {
+      text-align: right;
+    }
+  </style>
+</head>
+<body>
+  <div class="facture-details">
+    <h1>Facture</h1>
+    <h2>Réf. : {{facture_id}}</h2>
+    <p>Date facturation : {{date}}</p>
+    <p>Date échéance : {{dueDate}}</p>
+    <p>Code client : {{clientCode}}</p>
+  </div>
+
+  <div class="header-boxes">
+    <div class="emetteur">
+      <h3>Émetteur :</h3>
+      <p>{{entiteName}}</p>
+      <p>{{entiteAddress}}</p>
+      <br>
+      <p>{{entiteTel}}</p>
+      <p>{{entiteSite}}</p>
+    </div>
+    
+    <div class="client">
+      <h3>Client :</h3>
+      <p>{{clientName}}</p>
+      <p>{{clientAddress}}</p>
+    </div>
+  </div>
+
+  <table class="contenu">
+    <tr>
+      <th>Désignation</th>
+      <th>TVA</th>
+      <th>P.U. HT</th>
+      <th>Qté</th>
+      <th>Total HT</th>
+    </tr>
+    {{#each items}}
+      <tr>
+        <td>{{designation}}</td>
+        <td>{{tva}}%</td>
+        <td>{{puHt}}</td>
+        <td>{{quantite}}</td>
+        <td>{{totalHt}}</td>
+      </tr>
+    {{/each}}
+  </table>
+
+  <div class="bilan">
+    {{#each tvaList}}
+      <p class="tva-row">
+        <span class="titre">Total TVA {{tva}}%</span>
+        <span class="prix">{{total}}€</span>
+      </p>
+    {{/each}}
+    <p class="ttc">
+      <span class="titre">Total TTC :</span>
+      <span class="prix">{{totalTtc}}€</span>
+    </p>
+  </div>
+</body>
+</html>
