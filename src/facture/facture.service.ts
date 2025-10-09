@@ -2,7 +2,8 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { Facture, Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import * as fs from 'fs';
-import * as puppeteer from 'puppeteer';
+import * as puppeteer from 'puppeteer-core';
+import chromium from '@sparticuz/chromium';
 import * as Handlebars from 'handlebars';
 import * as path from 'path';
 
@@ -72,10 +73,6 @@ export class FactureService {
       total: total,
     }));
 
-    console.log(tvaList);
-    console.log(items);
-
-
     const totalHt = items.reduce((sum, it) => sum + it.totalHt, 0);
     const totalTtc =
       totalHt +
@@ -111,7 +108,11 @@ export class FactureService {
     const template = Handlebars.compile(htmlTemplate);
     const html = template(facture_info);
 
-    const browser = await puppeteer.launch({ headless: true });
+    const browser = await puppeteer.launch({
+      args: chromium.args,
+      executablePath: await chromium.executablePath(),
+    });
+    
     const page = await browser.newPage();
     await page.setContent(html, { waitUntil: 'networkidle0' });
     const pdf = await page.pdf({ format: 'A4', printBackground: true });
