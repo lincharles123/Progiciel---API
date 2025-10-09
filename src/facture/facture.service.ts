@@ -102,7 +102,7 @@ export class FactureService {
       totalTtc: totalTtc,
     };
 
-    const templatePath = path.join('E:\\git-repo\\Progiciel---API\\my-api\\src\\facture\\template\\facture.hbs');
+    const templatePath = path.join(__dirname, 'template', 'facture.hbs');
 
     if (!fs.existsSync(templatePath)) {
       throw new BadRequestException(`Template not found at ${templatePath}`);
