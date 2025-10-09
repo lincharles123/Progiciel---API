@@ -9,13 +9,13 @@ export class ClientController {
   async create(@Request() req) {
     const data = {
       ...req.body,
-      entiteId: req.user?.entiteId,
+      entite_id: req.user?.entite_id,
     };
     return await this.clientService.create(data);
   }
 
   @Get()
   async findAll(@Request() req) {
-    return await this.clientService.findAll(req.user.entiteId);
+    return await this.clientService.findAll(req.user.entite_id);
   }
 }

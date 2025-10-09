@@ -11,6 +11,7 @@ import { JwtStrategy } from './auth/jwt.strategy';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { APP_GUARD } from '@nestjs/core';
 import { OperationModule } from './operation/operation.module';
+import { TvaModule } from './tva/tva.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { OperationModule } from './operation/operation.module';
     AuthModule,
     ConfigModule.forRoot({ isGlobal: true }),
     OperationModule,
+    TvaModule,
   ],
   providers: [
     {

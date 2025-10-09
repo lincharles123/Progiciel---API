@@ -1,20 +1,46 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { Facture, Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
-import * as fs from 'fs';
-import * as puppeteer from 'puppeteer';
-import * as Handlebars from 'handlebars';
-import * as path from 'path';
+// import * as fs from 'fs';
+// import * as puppeteer from 'puppeteer';
+// import * as Handlebars from 'handlebars';
+// import * as path from 'path';
 
 @Injectable()
 export class FactureService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+  ) {}
 
-  async create(data: Prisma.FactureCreateInput): Promise<Facture> {
+  async create(data: any): Promise<Facture> {
     try {
-      return await this.prisma.facture.create({
-        data,
+      const facture: Prisma.FactureCreateInput = {
+        date_facturation: data.date_facturation,
+        date_echeance: data.date_echeance,
+        entite: { connect: { entite_id: data.entite_id } },
+        client: { connect: { client_id: data.client_id } },
+      };
+
+      const createdFacture = await this.prisma.facture.create({
+        data: facture,
       });
+
+      const createdOperations = await Promise.all(
+        data.operation.map(async operation => {
+          const op: Prisma.OperationCreateInput = {
+            quantite: operation.quantite,
+            snapshot_prestation: operation.snapshot_prestation,
+            snapshot_prix_unitaire: operation.snapshot_prix_unitaire,
+            snapshot_tva: operation.snapshot_tva,
+            facture: { connect: { facture_id: createdFacture.facture_id } },
+            prestation: { connect: { prestation_id: operation.prestation_id } },
+          };
+          
+          return await this.prisma.operation.create({ data: op });
+        })
+      );
+
+      return createdFacture;
     } catch (e) {
       if (
         e instanceof Prisma.PrismaClientKnownRequestError &&
@@ -97,20 +123,20 @@ export class FactureService {
       totalTtc: totalTtc,
     };
 
-    const templatePath = path.join(__dirname, 'template', 'facture.hbs');
+    // const templatePath = path.join(__dirname, 'template', 'facture.hbs');
 
-    if (!fs.existsSync(templatePath)) {
-      throw new BadRequestException(`Template not found at ${templatePath}`);
-    }
-    const htmlTemplate = fs.readFileSync(templatePath, 'utf8');
-    const template = Handlebars.compile(htmlTemplate);
-    const html = template(facture_info);
+    // if (!fs.existsSync(templatePath)) {
+    //   throw new BadRequestException(`Template not found at ${templatePath}`);
+    // }
+    // const htmlTemplate = fs.readFileSync(templatePath, 'utf8');
+    // const template = Handlebars.compile(htmlTemplate);
+    // const html = template(facture_info);
 
-    const browser = await puppeteer.launch({ headless: true });
-    const page = await browser.newPage();
-    await page.setContent(html, { waitUntil: 'networkidle0' });
-    const pdf = await page.pdf({ format: 'A4', printBackground: true });
-    await browser.close();
-    return pdf;
+    // const browser = await puppeteer.launch({ headless: true });
+    // const page = await browser.newPage();
+    // await page.setContent(html, { waitUntil: 'networkidle0' });
+    // const pdf = await page.pdf({ format: 'A4', printBackground: true });
+    // await browser.close();
+    return facture_info;
   }
 }

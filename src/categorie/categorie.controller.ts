@@ -9,13 +9,13 @@ export class CategorieController {
   async createCategorie(@Request() req): Promise<any> {
     const data = {
       ...req.body,
-      entiteId: req.user?.entiteId,
+      entite_id: req.user?.entite_id,
     };
     return await this.categorieService.create(data);
   }
 
   @Get()
   async findAll(@Request() req) {
-    return await this.categorieService.findAll(req.user.entiteId);
+    return await this.categorieService.findAll(req.user.entite_id);
   }
 }
