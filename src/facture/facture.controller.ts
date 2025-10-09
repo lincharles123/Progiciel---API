@@ -25,6 +25,7 @@ export class FactureController {
 
   @Get()
   async findAll(@Request() req) {
+    console.log(req.user);
     return await this.factureService.findAll(req.user?.entiteId);
   }
 

@@ -9,14 +9,14 @@ export class PrestationController {
   async createPrestation(@Request() req) {
     const data = {
       ...req.body,
-      entite_id: req.user?.entite_id, // use DB field name
+      entite_id: req.user?.entite_id,
     };
     return await this.prestationService.create(data);
   }
 
   @Get()
   async findAll(@Request() req) {
-    const entite_id = req.user?.entite_id; // use DB field name
+    const entite_id = req.user?.entite_id;
     return await this.prestationService.findAll(entite_id);
   }
 }
